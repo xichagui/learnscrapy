@@ -2,8 +2,8 @@
 import scrapy
 
 
-class BilibiliSpiderSpider(scrapy.Spider):
-    name = "bilibili_spider"
+class BilibiliSpider(scrapy.Spider):
+    name = "bilibili"
     allowed_domains = ["bilibili.com"]
     start_urls = ['http://bilibili.com/']
 
