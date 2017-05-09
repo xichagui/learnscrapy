@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for learnscrapy project
+# Scrapy settings for zhuanqspider project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,14 +9,14 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'learnscrapy'
+BOT_NAME = 'zhuanqspider'
 
-SPIDER_MODULES = ['learnscrapy.spiders']
-NEWSPIDER_MODULE = 'learnscrapy.spiders'
+SPIDER_MODULES = ['zhuanqspider.spiders']
+NEWSPIDER_MODULE = 'zhuanqspider.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'learnscrapy (+http://www.yourdomain.com)'
+#USER_AGENT = 'zhuanqspider (+http://www.yourdomain.com)'
 USER_AGENTS = [
     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
     "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)",
@@ -65,15 +65,15 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'learnscrapy.middlewares.LearnscrapySpiderMiddleware': 543,
+#    'zhuanqspider.middlewares.ZhuanqSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 'learnscrapy.middlewares.MyCustomDownloaderMiddleware': 543,
+    # 'zhuanqspider.middlewares.MyCustomDownloaderMiddleware': 543,
     #提供给request代理支持
-    'learnscrapy.middlewares.RandomUserAgent': 100,
+    'zhuanqspider.middlewares.RandomUserAgent': 100,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 101,
 
 }
@@ -87,7 +87,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'learnscrapy.pipelines.LearnscrapyPipeline': 300,
+#    'zhuanqspider.pipelines.ZhuanqPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
