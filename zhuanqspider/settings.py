@@ -45,7 +45,10 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
+
+# 下载延迟
 # DOWNLOAD_DELAY = 3
+
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -110,3 +113,13 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+
+IP_POOL = [
+	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},
+	{"ip": "183.78.183.156", "port": "82", "proxy_type": "HTTP"},
+	{"ip": "122.228.179.178", "port": "80", "proxy_type": "HTTP"},
+	{"ip": "123.206.132.68", "port": "808", "proxy_type": "HTTP"},
+	{"ip": "218.94.149.147", "port": "8118", "proxy_type": "HTTP"},
+	{"ip": "119.5.1.37", "port": "808", "proxy_type": "HTTP"}
+]
