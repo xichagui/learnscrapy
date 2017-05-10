@@ -102,3 +102,6 @@ ENV/
 
 #mac os
 .DS_Store
+
+a.txt
+.gitignore
