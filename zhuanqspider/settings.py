@@ -47,7 +47,7 @@ ROBOTSTXT_OBEY = True
 # See also autothrottle settings and docs
 
 # 下载延迟
-# DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
@@ -75,9 +75,12 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     # 'zhuanqspider.middlewares.MyCustomDownloaderMiddleware': 543,
-    #提供给request代理支持
+    #随机user-agent
     'zhuanqspider.middlewares.RandomUserAgent': 100,
-    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 101,
+    #提供给request代理支持
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 301,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': 302,
+    'zhuanqspider.middlewares.HttpProxyDM': 500
 
 }
 
@@ -114,6 +117,7 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+DOWNLOAD_TIMEOUT = 10
 
 IP_POOL = [
 	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},
@@ -123,3 +127,9 @@ IP_POOL = [
 	{"ip": "218.94.149.147", "port": "8118", "proxy_type": "HTTP"},
 	{"ip": "119.5.1.37", "port": "808", "proxy_type": "HTTP"}
 ]
+
+MONGODB_SERVER = 'localhost'
+MONGODB_PORT = 27017
+MONGODB_DB = 'scrapy'
+MONGODB_COLLECTION_PROXY = 'myproxyippool'
+MONGODB_URI = 'mongodb://scrapy01:scrapy01@localhost:27017/scrapy'

@@ -6,6 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import random
 
+import logging
 from scrapy import signals
 
 
@@ -71,3 +72,35 @@ class RandomUserAgent(object):
     def process_request(self, request, spider):
         #print "**************************" + random.choice(self.agents)
         request.headers.setdefault('User-Agent', random.choice(self.agents))
+
+class HttpProxyDM(object):
+    def __init__(self, ip_pool):
+        self.ip_pool = ip_pool
+        self.proxies = [{"proxy": None, "valid": True, "count": 0}]
+        self.proxy_index = 0
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings.getlist('IP_POOL'))
+
+    def process_request(self, request, spider):
+        self.proxy_index = 0
+
+        # if "change_proxy" in request.meta.keys() and request.meta["change_proxy"]:
+        #     logging.info("change proxy request get by spider: %s" % request)
+            # self.invalid_proxy(request.meta["proxy_index"])
+            # request.meta["change_proxy"] = False
+
+        if self.ip_pool != None:
+            proxy_ip = random.choice(self.ip_pool)
+            logging.info("------use the proxy ip: %s:%s" % (proxy_ip['ip'], proxy_ip['port']) )
+            request.meta["proxy"] = "http://%s:%s" % (proxy_ip['ip'], proxy_ip['port'])
+
+
+    def process_exception(self, request, exception, spider):
+        logging.info("exception for %s " % request.url)
+        new_request = request.copy()
+        proxy_ip = random.choice(self.ip_pool)
+        logging.info("------change proxy ip: %s:%s" % (proxy_ip['ip'], proxy_ip['port']) )
+        new_request.meta["proxy"] = "http://%s:%s" % (proxy_ip['ip'], proxy_ip['port'])
+        return new_request

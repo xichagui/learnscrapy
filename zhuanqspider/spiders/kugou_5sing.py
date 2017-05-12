@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import scrapy
+from scrapy.utils.project import get_project_settings
 
 class Kugou5singSpider(scrapy.Spider):
+
+
     name = "kugou_5sing"
     allowed_domains = ["kugou.com"]
     start_urls = ['http://5sing.kugou.com/tenderjun/default.html',
