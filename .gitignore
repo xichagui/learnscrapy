@@ -102,3 +102,5 @@ ENV/
 
 #mac os
 .DS_Store
+
+main.py
