@@ -104,3 +104,4 @@ ENV/
 .DS_Store
 
 main.py
+personal_settings.py

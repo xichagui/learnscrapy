@@ -8,7 +8,12 @@
 import scrapy
 
 
-class ZhuanqItem(scrapy.Item):
+class KugouItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    kugou_name = scrapy.Field()
+    kugou_fans = scrapy.Field()
+    kugou_popular = scrapy.Field()
+    kugou_img = scrapy.Field()
+    kugou_sign = scrapy.Field()
+

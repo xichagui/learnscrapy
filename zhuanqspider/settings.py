@@ -9,11 +9,12 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+from personal_settings import *
+
 BOT_NAME = 'zhuanqspider'
 
 SPIDER_MODULES = ['zhuanqspider.spiders']
 NEWSPIDER_MODULE = 'zhuanqspider.spiders'
-
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhuanqspider (+http://www.yourdomain.com)'
@@ -37,6 +38,7 @@ USER_AGENTS = [
 ]
 
 # Obey robots.txt rules
+# robots.txt 爬虫协议是否生效
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -47,7 +49,7 @@ ROBOTSTXT_OBEY = True
 # See also autothrottle settings and docs
 
 # 下载延迟
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 3
 
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
@@ -80,7 +82,8 @@ DOWNLOADER_MIDDLEWARES = {
     #提供给request代理支持
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 301,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': 302,
-    'zhuanqspider.middlewares.HttpProxyDM': 500
+    # 'zhuanqspider.middlewares.HttpProxyDM': 500
+    'zhuanqspider.middlewares.SimpleHttpProxyDM': 500
 
 }
 
@@ -117,19 +120,19 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DOWNLOAD_TIMEOUT = 10
+DOWNLOAD_TIMEOUT = 5
 
-IP_POOL = [
-	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},
-	{"ip": "183.78.183.156", "port": "82", "proxy_type": "HTTP"},
-	{"ip": "122.228.179.178", "port": "80", "proxy_type": "HTTP"},
-	{"ip": "123.206.132.68", "port": "808", "proxy_type": "HTTP"},
-	{"ip": "218.94.149.147", "port": "8118", "proxy_type": "HTTP"},
-	{"ip": "119.5.1.37", "port": "808", "proxy_type": "HTTP"}
-]
-
-MONGODB_SERVER = 'localhost'
-MONGODB_PORT = 27017
-MONGODB_DB = 'scrapy'
-MONGODB_COLLECTION_PROXY = 'myproxyippool'
-MONGODB_URI = 'mongodb://scrapy01:scrapy01@localhost:27017/scrapy'
+# IP_POOL = [
+# 	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},
+# 	{"ip": "183.78.183.156", "port": "82", "proxy_type": "HTTP"},
+# 	{"ip": "122.228.179.178", "port": "80", "proxy_type": "HTTP"},
+# 	{"ip": "123.206.132.68", "port": "808", "proxy_type": "HTTP"},
+# 	{"ip": "218.94.149.147", "port": "8118", "proxy_type": "HTTP"},
+# 	{"ip": "119.5.1.37", "port": "808", "proxy_type": "HTTP"}
+# ]
+#
+# MONGODB_SERVER = 'localhost'
+# MONGODB_PORT = 27017
+# MONGODB_DB = 'scrapy'
+# MONGODB_COLLECTION_PROXY = 'myproxyippool'
+# MONGODB_URI = 'mongodb://scrapy01:scrapy01@localhost:27017/scrapy'
