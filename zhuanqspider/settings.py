@@ -9,7 +9,7 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-from personal_settings import *
+from zhuanqspider.personal_settings import *
 
 BOT_NAME = 'zhuanqspider'
 
@@ -49,7 +49,9 @@ ROBOTSTXT_OBEY = True
 # See also autothrottle settings and docs
 
 # 下载延迟
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 0.5
+# 默认开启
+# RANDOMIZE_DOWNLOAD_DELAY = True
 
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16

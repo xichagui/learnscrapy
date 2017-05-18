@@ -16,4 +16,3 @@ class KugouItem(scrapy.Item):
     kugou_popular = scrapy.Field()
     kugou_img = scrapy.Field()
     kugou_sign = scrapy.Field()
-

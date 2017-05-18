@@ -5,7 +5,8 @@ import re
 import scrapy
 from scrapy import Request
 
-from items import KugouItem
+from zhuanqspider.items import KugouItem
+from .spiders_settings import kugou_5sing_settings
 
 
 class Kugou5singSpider(scrapy.Spider):
@@ -14,25 +15,27 @@ class Kugou5singSpider(scrapy.Spider):
     name = "kugou_5sing"
     allowed_domains = ["kugou.com"]
     start_urls = [
-                    'http://5sing.kugou.com/muhan/default.html',
+                    # 'http://5sing.kugou.com/muhan/default.html',
                     # 'http://5sing.kugou.com/crazyman/default.html',
                     # 'http://5sing.kugou.com/inory/default.html',
                     # 'http://5sing.kugou.com/jarellee/default.html',
-                    # 'http://5sing.kugou.com/462455/default.html',
-                    # 'http://5sing.kugou.com/muhan/yc/1.html',
+                    'http://5sing.kugou.com/462455/default.html',
                   ]
 
+    custom_settings = kugou_5sing_settings.custom_settings
+
     # per_spider配置, 将覆盖settings设置
-    custom_settings = {
-        'DOWNLOADER_MIDDLEWARES' : {
-           # 提供给request代理支持
-           'zhuanqspider.middlewares.RandomUserAgent': 100,
-        },
-        # 'ROBOTSTXT_OBEY' : False
-    }
+    # custom_settings = {
+    #     'DOWNLOADER_MIDDLEWARES' : {
+    #        # 提供给request代理支持
+    #        'zhuanqspider.middlewares.RandomUserAgent': 100,
+    #     },
+    #     # 'ROBOTSTXT_OBEY' : False
+    # }
 
     def parse(self, response):
-        logging.info('%s status code is %d' % (response.url, response.status))
+        # logger = logging.getLogger('kugou_5sing_parse')
+        # logger.info('%s status code is %d' % (response.url, response.status))
         title = response.selector.xpath('/html/head/title/text()').extract()
         item = KugouItem()
 
@@ -55,26 +58,46 @@ class Kugou5singSpider(scrapy.Spider):
         song_url_list.append(response.urljoin('bz/1.html'))
 
         for url in song_url_list:
-            yield Request(url, callback=self.parse_lists, meta={'item': item})
+            yield Request(url, callback=self.parse_lists, meta={'item': item, 'version': version})
+            # pass
 
     def parse_lists(self, response):
         #分析原创、翻唱、伴奏页面，提取当前页歌曲连接以及下一页
-        logging.info('%s status code is %d' % (response.url, response.status))
+        self.logger.info('%s status code is %d' % (response.url, response.status))
         item = response.meta['item']
+        version = response.meta['version']
         html_text = str(response.body, encoding="utf-8")
-        song_list = response.selector.css('li strong a::attr(href)').extract()
 
-        for url_path in song_list:
-            # yield Request(url_path, callback=self.parse_song, meta={'item': item})
-            print(url_path)
+        # song_list = response.selector.css('li strong a::attr(href)').extract()
+        # for url_path in song_list:
+        #     yield Request(url_path, callback=self.parse_song, meta={'item': item})
+        #
+        # m = re.search('<a class=\"noFlush_load_link\".*href=\"(.*)\".*下一页</a>', html_text)
+        # if m is not None :
+        #     next_page_url = response.urljoin(m.group(1))
+        #     yield Request(next_page_url, callback=self.parse_lists, meta={'item': item})
+        #     #yield Request('http://5sing.kugou.com/muhan/yc/2.html', callback=self.parse_lists, meta={'item': item})
+        # else:
+        #     logging.debug('%s is the last page' % response.url)
 
-        try:
-            m = re.search('<a class=\"noFlush_load_link\".*href=\"(.*)\".*下一页</a>', html_text)
-            next_page_url = response.urljoin(m.group(1))
-            yield Request(next_page_url, callback=self.parse_lists, meta={'item': item})
-            #yield Request('http://5sing.kugou.com/muhan/yc/2.html', callback=self.parse_lists, meta={'item': item})
-        except Exception:
-            print('没有下一页了')
+        song_list = re.findall('href="(http://5sing\.kugou\.com/\w{2}/\d{1,8}\.html)"', html_text)
+        song_list_unique = list(set(song_list))
+        song_list_unique.sort(key=song_list.index)
+        for url in song_list_unique:
+            # yield Request(url, callback=self.parse_song, meta={'item': item})
+            print(url, '_________' ,response.url)
+
+        m = []
+
+        if version == 2:
+            m = response.css('.page_message_clo+a::attr("href")').extract()
+        else:
+            m = re.findall('<a.*href="(/.*.html).*下一页.*a>', html_text)
+
+        if len(m) > 0:
+            next_url_path = m[0]
+            next_page_url = response.urljoin(next_url_path)
+            yield Request(next_page_url, callback=self.parse_lists, meta={'item': item, 'version': version})
 
     def parse_song(self, response):
         print('parse_song_url:-----', response.url)
@@ -100,8 +123,8 @@ class Kugou5singSpider(scrapy.Spider):
 
         return kugou_img, version
 
-    def start_requests(self):
-        return [Request("http://www.baidu.com", callback=self.logged_in)]
+    # def start_requests(self):
+    #     return [Request("http://www.baidu.com", callback=self.logged_in)]
 
     def logged_in(self, response):
         print(response.url)
