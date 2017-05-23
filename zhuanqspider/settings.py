@@ -41,6 +41,7 @@ USER_AGENTS = [
 # robots.txt 爬虫协议是否生效
 ROBOTSTXT_OBEY = True
 
+# LOG_LEVEL  = 'INFO'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -123,6 +124,7 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 DOWNLOAD_TIMEOUT = 5
+
 
 # IP_POOL = [
 # 	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},

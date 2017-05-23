@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
+import random
 
 import re
 import scrapy
-from scrapy import Request
+import time
+from scrapy import Request, FormRequest
 
 from zhuanqspider.items import KugouItem
 from .spiders_settings import kugou_5sing_settings
 
 
+
 class Kugou5singSpider(scrapy.Spider):
-
-
     name = "kugou_5sing"
     allowed_domains = ["kugou.com"]
     start_urls = [
@@ -19,24 +21,30 @@ class Kugou5singSpider(scrapy.Spider):
                     # 'http://5sing.kugou.com/crazyman/default.html',
                     # 'http://5sing.kugou.com/inory/default.html',
                     # 'http://5sing.kugou.com/jarellee/default.html',
-                    'http://5sing.kugou.com/462455/default.html',
+                    # 'http://5sing.kugou.com/462455/default.html'
+                    'http://5sing.kugou.com/27500705/default.html'
                   ]
 
+    #自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = kugou_5sing_settings.custom_settings
 
-    # per_spider配置, 将覆盖settings设置
-    # custom_settings = {
-    #     'DOWNLOADER_MIDDLEWARES' : {
-    #        # 提供给request代理支持
-    #        'zhuanqspider.middlewares.RandomUserAgent': 100,
-    #     },
-    #     # 'ROBOTSTXT_OBEY' : False
-    # }
+    song_mapping = {
+        '演唱：': 'singer',
+        '作词：': 'lyricist',
+        '作曲：': 'composer',
+        '编曲：': 'arrange',
+        '混缩：': 'mixer',
+        '分类：': 'type',
+        '语种：': 'language',
+        '曲风：': 'style',
+        '下载设置：': 'download',
+        '上传时间：': 'upload_time',
+        '原唱：': 'original_singer'
+    }
 
     def parse(self, response):
-        # logger = logging.getLogger('kugou_5sing_parse')
-        # logger.info('%s status code is %d' % (response.url, response.status))
-        title = response.selector.xpath('/html/head/title/text()').extract()
+        logger = logging.getLogger('kugou_5sing_parse')
+        logger.info('%s status code is %d' % (response.url, response.status))
         item = KugouItem()
 
         html_text = str(response.body, encoding="utf-8")
@@ -45,10 +53,13 @@ class Kugou5singSpider(scrapy.Spider):
                 var OwnerNickName = '「M」Crazyman狮子';
         '''
         item['kugou_name'] = re.search('var OwnerNickName = \'(.*)\'', html_text).group(1)
-        item['kugou_popular'] = re.search('\d+', response.selector.xpath('//*[@id="totalrq"]/a/text()').extract()[0]).group(0)
-        item['kugou_fans'] =  re.search('\d+', response.selector.xpath('//*[@id="totalfans"]/a/text()').extract()[0]).group(0)
+        item['kugou_url'] = response.url
+        item['kugou_popular'] = \
+            re.search('\d+', response.selector.xpath('//*[@id="totalrq"]/a/text()').extract()[0]).group(0)
+        item['kugou_fans'] =  \
+            re.search('\d+', response.selector.xpath('//*[@id="totalfans"]/a/text()').extract()[0]).group(0)
 
-        #针对目前发现的5种 5sing主页
+        # 针对目前发现的5种 5sing主页
         img, version = self.getImgAndVersion(response)
         item['kugou_img'] = img
 
@@ -59,33 +70,19 @@ class Kugou5singSpider(scrapy.Spider):
 
         for url in song_url_list:
             yield Request(url, callback=self.parse_lists, meta={'item': item, 'version': version})
-            # pass
 
     def parse_lists(self, response):
-        #分析原创、翻唱、伴奏页面，提取当前页歌曲连接以及下一页
+        # 分析原创、翻唱、伴奏页面，提取当前页歌曲连接以及下一页
         self.logger.info('%s status code is %d' % (response.url, response.status))
         item = response.meta['item']
         version = response.meta['version']
         html_text = str(response.body, encoding="utf-8")
 
-        # song_list = response.selector.css('li strong a::attr(href)').extract()
-        # for url_path in song_list:
-        #     yield Request(url_path, callback=self.parse_song, meta={'item': item})
-        #
-        # m = re.search('<a class=\"noFlush_load_link\".*href=\"(.*)\".*下一页</a>', html_text)
-        # if m is not None :
-        #     next_page_url = response.urljoin(m.group(1))
-        #     yield Request(next_page_url, callback=self.parse_lists, meta={'item': item})
-        #     #yield Request('http://5sing.kugou.com/muhan/yc/2.html', callback=self.parse_lists, meta={'item': item})
-        # else:
-        #     logging.debug('%s is the last page' % response.url)
-
         song_list = re.findall('href="(http://5sing\.kugou\.com/\w{2}/\d{1,8}\.html)"', html_text)
         song_list_unique = list(set(song_list))
         song_list_unique.sort(key=song_list.index)
         for url in song_list_unique:
-            # yield Request(url, callback=self.parse_song, meta={'item': item})
-            print(url, '_________' ,response.url)
+            yield Request(url, callback=self.parse_song, meta={'item': item})
 
         m = []
 
@@ -100,7 +97,79 @@ class Kugou5singSpider(scrapy.Spider):
             yield Request(next_page_url, callback=self.parse_lists, meta={'item': item, 'version': version})
 
     def parse_song(self, response):
-        print('parse_song_url:-----', response.url)
+        logging.info('parse_song_url:-----%s' % response.url)
+
+        html_text = str(response.body, encoding="utf-8")
+
+        song_list = response.css('.mb15 li')
+
+        item = response.meta['item']
+
+        item['song_name'] = response.css('.view_tit h1::text').extract()[0]
+
+        for l in song_list:
+            li_selector = l.css('::text').extract()
+
+            try:
+                # 非采集项或采集资料为空
+                key = self.song_mapping[li_selector[0]]
+                data = li_selector[1]
+            except:
+                continue
+
+            if data is not None and data !='' :
+                if key == 'style' or key == 'language':
+                    data_filter = filter(lambda x: x != '', re.split('/|\s', data))
+                    data = list(data_filter)
+                    item[key] = data
+                else :
+                    item[key] = data.replace('\t', '')
+
+        ins_m = re.search('<!--inspiration-->([\s\S]*)<!--inspiration-->', html_text)
+        ins_temp = ins_m.group(1)
+        ins_temp = re.sub('[\n\r]', '', ins_temp)
+        ins = re.sub('(^\s*)|(\s*$)', '', ins_temp)
+
+        lrc_m = re.search('<!--lrc-->([\s\S]*)<!--lrc-->', html_text)
+        lrc_temp = lrc_m.group(1)
+        lrc_temp = re.sub('[\n\r]', '', lrc_temp)
+        lrc = re.sub('(^\s*)|(\s*$)', '', lrc_temp)
+
+        callback_name = self.getRandomCallbackName()
+        _time  = str(time.time() * 1000)[:13]
+        # http://5sing.kugou.com/\w{2}/\d{1,8}.html
+        song_type = response.url[23:25]
+        song_id = response.url[26:-5]
+        user_id = re.search('var OwnerUserID = ([0-9]*)', html_text).group(1)
+        _url = item['kugou_url']
+
+        yield FormRequest(
+            'http://service.5sing.kugou.com/song/songDetailInit',
+            method='GET' ,
+            formdata={
+                'jsoncallback': callback_name,
+                'SongID': song_id,
+                'UserID': user_id,
+                'url' : _url,
+                'SongType' : song_type,
+                '_' : _time
+            },
+            callback=self.parse_song_count,
+            meta={'item': item}
+        )
+
+    def parse_song_count(self, response):
+        item = response.meta['item']
+        m = re.search('^jQuery[0-9_]*\((.*)\)$', response.body_as_unicode())
+        song_detail_json = json.loads(m.group(1))
+        song_dict = song_detail_json['song']
+        like_dict = song_detail_json['like']
+        item['song_popular'] = song_dict['totalrq']
+        item['song_click'] = song_dict['totalclick']
+        item['song_download_count'] = song_dict['totaldown']
+        item['song_collect'] = song_dict['collect']
+        item['song_like'] = like_dict['songlike']
+        yield item
 
     def getImgAndVersion(self, response):
         kugou_img = ''
@@ -123,13 +192,12 @@ class Kugou5singSpider(scrapy.Spider):
 
         return kugou_img, version
 
-    # def start_requests(self):
-    #     return [Request("http://www.baidu.com", callback=self.logged_in)]
+    def getRandomCallbackName(self):
+        str_map ='0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
+                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
+                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
+                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789'
+        str1 = 'jQuery17' + ''.join(random.sample(str_map, 17)) + '_' + str(time.time() * 1000)[:13]
+        return str1
 
-    def logged_in(self, response):
-        print(response.url)
-
-
-
-
-
+«
