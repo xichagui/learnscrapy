@@ -13,7 +13,6 @@ class ZhuanqPipeline(object):
     def process_item(self, item, spider):
         return item
 
-
 class Kugou5singPl(object):
 
     def __init__(self, mongo_uri, mongo_db, mongo_collection):

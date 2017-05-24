@@ -12,7 +12,6 @@ from zhuanqspider.items import KugouItem
 from .spiders_settings import kugou_5sing_settings
 
 
-
 class Kugou5singSpider(scrapy.Spider):
     name = "kugou_5sing"
     allowed_domains = ["kugou.com"]
@@ -59,15 +58,15 @@ class Kugou5singSpider(scrapy.Spider):
             re.search('\d+', response.selector.xpath('//*[@id="totalfans"]/a/text()').extract()[0]).group(0)
 
         # 针对目前发现的5种 5sing主页
-        img, version = self.getImgAndVersion(response)
+        img, version = self.get_img_a_version(response)
         item['kugou_img'] = img
 
         # 小图标
-        icons = re.findall('static\.5sing\.kugou\.com\/images\/Special\/([^u].*?)\.gif', response.body_as_unicode())
+        icons = re.findall('static\.5sing\.kugou\.com/images/Special/([^u].*?)\.gif', response.body_as_unicode())
         for icon in icons:
             item['is_' + icon] = True
 
-        song_url_list = []
+        song_url_list = list()
         song_url_list.append(response.urljoin('yc/1.html'))
         song_url_list.append(response.urljoin('fc/1.html'))
         song_url_list.append(response.urljoin('bz/1.html'))
@@ -84,17 +83,16 @@ class Kugou5singSpider(scrapy.Spider):
         song_list = re.findall('href="(http://5sing\.kugou\.com/\w{2}/\d{1,8}\.html)"', response.body_as_unicode())
         song_list_unique = list(set(song_list))
         song_list_unique.sort(key=song_list.index)
+
         for url in song_list_unique:
             yield Request(url, callback=self.parse_song, meta={'item': item})
-
-        m = []
 
         if version == 2:
             m = response.css('.page_message_clo+a::attr("href")').extract()
         else:
             m = re.findall('<a.*href="(/.*.html).*下一页.*a>', response.body_as_unicode())
 
-        if len(m) > 0:
+        if m:
             next_url_path = m[0]
             next_page_url = response.urljoin(next_url_path)
             yield Request(next_page_url, callback=self.parse_lists, meta={'item': item, 'version': version})
@@ -113,15 +111,15 @@ class Kugou5singSpider(scrapy.Spider):
                 # 非采集项或采集资料为空
                 key = self.song_mapping[li_selector[0]]
                 data = li_selector[1]
-            except:
+            except (KeyError, IndexError):
                 continue
 
-            if data is not None and data !='' :
+            if data is not None and data != '':
                 if key == 'style' or key == 'language':
                     data_filter = filter(lambda x: x != '', re.split('/|\s', data))
                     data = list(data_filter)
                     item[key] = data
-                else :
+                else:
                     item[key] = data.replace('\t', '')
 
         ins_m = re.search('<!--inspiration-->([\s\S]*)<!--inspiration-->', response.body_as_unicode())
@@ -136,8 +134,8 @@ class Kugou5singSpider(scrapy.Spider):
         lrc = re.sub('(^\s*)|(\s*$)', '', lrc_temp)
         item['lrc'] = lrc
 
-        callback_name = self.getRandomCallbackName()
-        _time  = str(time.time() * 1000)[:13]
+        callback_name = self.get_random_callback_name()
+        _time = str(time.time() * 1000)[:13]
         # http://5sing.kugou.com/\w{2}/\d{1,8}.html
         song_type = response.url[23:25]
         song_id = response.url[26:-5]
@@ -146,14 +144,14 @@ class Kugou5singSpider(scrapy.Spider):
 
         yield FormRequest(
             'http://service.5sing.kugou.com/song/songDetailInit',
-            method='GET' ,
+            method='GET',
             formdata={
                 'jsoncallback': callback_name,
                 'SongID': song_id,
                 'UserID': user_id,
-                'url' : _url,
-                'SongType' : song_type,
-                '_' : _time
+                'url': _url,
+                'SongType': song_type,
+                '_': _time
             },
             callback=self.parse_song_count,
             meta={'item': item}
@@ -173,7 +171,8 @@ class Kugou5singSpider(scrapy.Spider):
 
         yield item
 
-    def getImgAndVersion(self, response):
+    @staticmethod
+    def get_img_a_version(response):
         kugou_img = ''
         version = 0
         if len(response.selector.css('.user_pic img::attr(src)').extract()) > 0:
@@ -194,11 +193,8 @@ class Kugou5singSpider(scrapy.Spider):
 
         return kugou_img, version
 
-    def getRandomCallbackName(self):
-        str_map ='0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
-                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
-                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789' \
-                 '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789'
+    @staticmethod
+    def get_random_callback_name():
+        str_map = '0123456789' * 20
         str1 = 'jQuery17' + ''.join(random.sample(str_map, 17)) + '_' + str(time.time() * 1000)[:13]
         return str1
-
