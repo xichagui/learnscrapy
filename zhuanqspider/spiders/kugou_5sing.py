@@ -47,12 +47,11 @@ class Kugou5singSpider(scrapy.Spider):
         logger.info('%s status code is %d' % (response.url, response.status))
         item = KugouItem()
 
-        html_text = str(response.body, encoding="utf-8")
         '''
             <script type="text/javascript">
                 var OwnerNickName = '「M」Crazyman狮子';
         '''
-        item['kugou_name'] = re.search('var OwnerNickName = \'(.*)\'', html_text).group(1)
+        item['kugou_name'] = re.search('var OwnerNickName = \'(.*)\'', response.body_as_unicode()).group(1)
         item['kugou_url'] = response.url
         item['kugou_popular'] = \
             re.search('\d+', response.selector.xpath('//*[@id="totalrq"]/a/text()').extract()[0]).group(0)
@@ -62,6 +61,11 @@ class Kugou5singSpider(scrapy.Spider):
         # 针对目前发现的5种 5sing主页
         img, version = self.getImgAndVersion(response)
         item['kugou_img'] = img
+
+        # 小图标
+        icons = re.findall('static\.5sing\.kugou\.com\/images\/Special\/([^u].*?)\.gif', response.body_as_unicode())
+        for icon in icons:
+            item['is_' + icon] = True
 
         song_url_list = []
         song_url_list.append(response.urljoin('yc/1.html'))
@@ -76,9 +80,8 @@ class Kugou5singSpider(scrapy.Spider):
         self.logger.info('%s status code is %d' % (response.url, response.status))
         item = response.meta['item']
         version = response.meta['version']
-        html_text = str(response.body, encoding="utf-8")
 
-        song_list = re.findall('href="(http://5sing\.kugou\.com/\w{2}/\d{1,8}\.html)"', html_text)
+        song_list = re.findall('href="(http://5sing\.kugou\.com/\w{2}/\d{1,8}\.html)"', response.body_as_unicode())
         song_list_unique = list(set(song_list))
         song_list_unique.sort(key=song_list.index)
         for url in song_list_unique:
@@ -89,7 +92,7 @@ class Kugou5singSpider(scrapy.Spider):
         if version == 2:
             m = response.css('.page_message_clo+a::attr("href")').extract()
         else:
-            m = re.findall('<a.*href="(/.*.html).*下一页.*a>', html_text)
+            m = re.findall('<a.*href="(/.*.html).*下一页.*a>', response.body_as_unicode())
 
         if len(m) > 0:
             next_url_path = m[0]
@@ -98,14 +101,10 @@ class Kugou5singSpider(scrapy.Spider):
 
     def parse_song(self, response):
         logging.info('parse_song_url:-----%s' % response.url)
-
-        html_text = str(response.body, encoding="utf-8")
-
-        song_list = response.css('.mb15 li')
-
         item = response.meta['item']
 
         item['song_name'] = response.css('.view_tit h1::text').extract()[0]
+        song_list = response.css('.mb15 li')
 
         for l in song_list:
             li_selector = l.css('::text').extract()
@@ -125,22 +124,24 @@ class Kugou5singSpider(scrapy.Spider):
                 else :
                     item[key] = data.replace('\t', '')
 
-        ins_m = re.search('<!--inspiration-->([\s\S]*)<!--inspiration-->', html_text)
+        ins_m = re.search('<!--inspiration-->([\s\S]*)<!--inspiration-->', response.body_as_unicode())
         ins_temp = ins_m.group(1)
         ins_temp = re.sub('[\n\r]', '', ins_temp)
         ins = re.sub('(^\s*)|(\s*$)', '', ins_temp)
+        item['inspiration'] = ins
 
-        lrc_m = re.search('<!--lrc-->([\s\S]*)<!--lrc-->', html_text)
+        lrc_m = re.search('<!--lrc-->([\s\S]*)<!--lrc-->', response.body_as_unicode())
         lrc_temp = lrc_m.group(1)
         lrc_temp = re.sub('[\n\r]', '', lrc_temp)
         lrc = re.sub('(^\s*)|(\s*$)', '', lrc_temp)
+        item['lrc'] = lrc
 
         callback_name = self.getRandomCallbackName()
         _time  = str(time.time() * 1000)[:13]
         # http://5sing.kugou.com/\w{2}/\d{1,8}.html
         song_type = response.url[23:25]
         song_id = response.url[26:-5]
-        user_id = re.search('var OwnerUserID = ([0-9]*)', html_text).group(1)
+        user_id = re.search('var OwnerUserID = ([0-9]*)', response.body_as_unicode()).group(1)
         _url = item['kugou_url']
 
         yield FormRequest(
@@ -169,6 +170,7 @@ class Kugou5singSpider(scrapy.Spider):
         item['song_download_count'] = song_dict['totaldown']
         item['song_collect'] = song_dict['collect']
         item['song_like'] = like_dict['songlike']
+
         yield item
 
     def getImgAndVersion(self, response):
@@ -200,4 +202,3 @@ class Kugou5singSpider(scrapy.Spider):
         str1 = 'jQuery17' + ''.join(random.sample(str_map, 17)) + '_' + str(time.time() * 1000)[:13]
         return str1
 
-«

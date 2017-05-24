@@ -27,7 +27,7 @@ class Kugou5singPl(object):
         return cls(
             mongo_uri = crawler.settings.get('MONGODB_URI'),
             mongo_db = crawler.settings.get('MONGODB_DB'),
-            mongo_collection = crawler.settings.get('MONGODB_COLLECTION_PROXY')
+            mongo_collection = crawler.settings.get('MONGODB_COLLECTION_KUGOU')
         )
 
     def open_spider(self, spider):
