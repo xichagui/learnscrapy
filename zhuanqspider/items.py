@@ -60,3 +60,39 @@ class KugouItem(scrapy.Item):
     song_download_count = scrapy.Field()
     song_collect = scrapy.Field()
     song_like = scrapy.Field()
+    song_url = scrapy.Field()
+
+class BilibiliItem(scrapy.Item):
+    # b站昵称、头像、签名、粉丝数、播放数、空间地址、mid、生日、公告
+    bilibili_name = scrapy.Field()
+    bilibili_img = scrapy.Field()
+    bilibili_sign = scrapy.Field()
+    bilibili_fans = scrapy.Field()
+    bilibili_play = scrapy.Field()
+    bilibili_url = scrapy.Field()
+    bilibili_mid = scrapy.Field()
+    bilibili_birthday = scrapy.Field()
+    bilibili_notice = scrapy.Field()
+    bilibili_sex = scrapy.Field()
+    bilibili_regtime = scrapy.Field()
+
+    # 视频信息
+    title = scrapy.Field()
+    play = scrapy.Field()
+    pic = scrapy.Field()
+    description = scrapy.Field()
+    author = scrapy.Field()
+    aid = scrapy.Field()
+    review = scrapy.Field()
+    favorites = scrapy.Field()
+    length = scrapy.Field()
+    created = scrapy.Field()
+    typeid = scrapy.Field()
+    comment = scrapy.Field()
+    coin = scrapy.Field()
+    video_url = scrapy.Field()
+
+
+
+
+

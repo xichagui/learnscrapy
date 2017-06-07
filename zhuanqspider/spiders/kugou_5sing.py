@@ -10,6 +10,7 @@ from scrapy import Request, FormRequest
 
 from zhuanqspider.items import KugouItem
 from .spiders_settings import kugou_5sing_settings
+from zhuanqspider.util.spider_util import SpiderUtil
 
 
 class Kugou5singSpider(scrapy.Spider):
@@ -102,6 +103,7 @@ class Kugou5singSpider(scrapy.Spider):
         item = response.meta['item']
 
         item['song_name'] = response.css('.view_tit h1::text').extract()[0]
+        item['song_url'] = response.url
         song_list = response.css('.mb15 li')
 
         for l in song_list:
@@ -134,7 +136,7 @@ class Kugou5singSpider(scrapy.Spider):
         lrc = re.sub('(^\s*)|(\s*$)', '', lrc_temp)
         item['lrc'] = lrc
 
-        callback_name = self.get_random_callback_name()
+        callback_name = SpiderUtil.get_random_callback_name()
         _time = str(time.time() * 1000)[:13]
         # http://5sing.kugou.com/\w{2}/\d{1,8}.html
         song_type = response.url[23:25]
@@ -192,9 +194,3 @@ class Kugou5singSpider(scrapy.Spider):
             kugou_img = response.selector.css('.b_con span img::attr(src)').extract()[0][:-12] + '_180_180.jpg'
 
         return kugou_img, version
-
-    @staticmethod
-    def get_random_callback_name():
-        str_map = '0123456789' * 20
-        str1 = 'jQuery17' + ''.join(random.sample(str_map, 17)) + '_' + str(time.time() * 1000)[:13]
-        return str1
