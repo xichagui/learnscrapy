@@ -158,9 +158,22 @@ class BilibiliSpider(scrapy.Spider):
 
     def parse_video_more(self, response):
         item = response.meta['item']
-        # # 视频硬币数、标签
-        # m = re.search('^jQuery[0-9_]*\((.*)\);$', response.body_as_unicode())
-        # json_dict = json.loads(m.group(1))
-        # # print(json_dict)
-        # item['coin'] = json_dict['data']['coin']
-        yield item
+        # 视频硬币数、标签
+        m = re.search('^jQuery[0-9_]*\((.*)\);$', response.body_as_unicode())
+        json_dict = json.loads(m.group(1))
+
+        item['coin'] = json_dict['data']['coin']
+        yield FormRequest(
+            'http://api.bilibili.com/archive_stat/stat',
+            headers={"Referer": item['bilibili_url']},
+            method='GET',
+            formdata={
+                'callback': SpiderUtil.get_random_callback_name(),
+                'aid': str(item['aid']),
+                'type': 'jsonp',
+                'order': 'senddate',
+                '_': str(time.time() * 1000)[:13]
+            },
+            meta={'item': item},
+            callback=self.parse_video_more
+        )
