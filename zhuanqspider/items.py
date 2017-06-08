@@ -83,7 +83,6 @@ class BilibiliItem(scrapy.Item):
     description = scrapy.Field()
     author = scrapy.Field()
     aid = scrapy.Field()
-    review = scrapy.Field()
     favorites = scrapy.Field()
     length = scrapy.Field()
     created = scrapy.Field()
@@ -91,6 +90,10 @@ class BilibiliItem(scrapy.Item):
     comment = scrapy.Field()
     coin = scrapy.Field()
     video_url = scrapy.Field()
+    tags = scrapy.Field()
+
+    #多p视频列表
+    video_list = scrapy.Field()
 
 
 

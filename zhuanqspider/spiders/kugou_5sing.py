@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import random
 
 import re
 import scrapy
@@ -136,7 +135,7 @@ class Kugou5singSpider(scrapy.Spider):
         lrc = re.sub('(^\s*)|(\s*$)', '', lrc_temp)
         item['lrc'] = lrc
 
-        callback_name = SpiderUtil.get_random_callback_name()
+        callback_name = SpiderUtil.get_random_callback_name('kugou')
         _time = str(time.time() * 1000)[:13]
         # http://5sing.kugou.com/\w{2}/\d{1,8}.html
         song_type = response.url[23:25]
