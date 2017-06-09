@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import base64
 import json
 import logging
 
@@ -85,7 +86,8 @@ class Kugou5singSpider(scrapy.Spider):
         song_list_unique.sort(key=song_list.index)
 
         for url in song_list_unique:
-            yield Request(url, callback=self.parse_song, meta={'item': item})
+            new_item = KugouItem(item)  # 单个item变多item的时候 需要深复制
+            yield Request(url, callback=self.parse_song, meta={'item': new_item})
 
         if version == 2:
             m = response.css('.page_message_clo+a::attr("href")').extract()
@@ -104,6 +106,10 @@ class Kugou5singSpider(scrapy.Spider):
         item['song_name'] = response.css('.view_tit h1::text').extract()[0]
         item['song_url'] = response.url
         song_list = response.css('.mb15 li')
+
+        temp = base64.b64decode(re.search('\"ticket\": \"(.*)\"', response.body_as_unicode()).group(1))
+        json_object = json.loads(temp.decode())
+        item['file_url'] = json_object['file']
 
         for l in song_list:
             li_selector = l.css('::text').extract()

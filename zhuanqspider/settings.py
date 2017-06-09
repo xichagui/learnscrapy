@@ -124,7 +124,8 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 DOWNLOAD_TIMEOUT = 5
-
+RETRY_ENABLED = True
+RETRY_TIMES = 10
 
 # IP_POOL = [
 # 	{"ip": "175.155.25.55", "port": "808", "proxy_type": "HTTP"},
