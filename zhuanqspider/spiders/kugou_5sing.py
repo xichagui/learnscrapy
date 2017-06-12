@@ -22,7 +22,8 @@ class Kugou5singSpider(scrapy.Spider):
                     # 'http://5sing.kugou.com/inory/default.html',
                     # 'http://5sing.kugou.com/jarellee/default.html',
                     # 'http://5sing.kugou.com/462455/default.html'
-                    'http://5sing.kugou.com/27500705/default.html'
+                    # 'http://5sing.kugou.com/27500705/default.html'
+                    'http://5sing.kugou.com/28378554/default.html' # 下载测试
                   ]
 
     #自定义设置 覆盖settings文件 作用范围为spider
@@ -109,7 +110,7 @@ class Kugou5singSpider(scrapy.Spider):
 
         temp = base64.b64decode(re.search('\"ticket\": \"(.*)\"', response.body_as_unicode()).group(1))
         json_object = json.loads(temp.decode())
-        item['file_url'] = json_object['file']
+        item['file_urls'] = [json_object['file']]
 
         for l in song_list:
             li_selector = l.css('::text').extract()

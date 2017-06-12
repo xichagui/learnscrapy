@@ -86,9 +86,11 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 301,
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': 302,
     # 'zhuanqspider.middlewares.HttpProxyDM': 500
-    'zhuanqspider.middlewares.SimpleHttpProxyDM': 500
+    # 'zhuanqspider.middlewares.SimpleHttpProxyDM': 500
 
 }
+
+FILES_STORE = '/Users/Cha/Music'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -123,7 +125,7 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DOWNLOAD_TIMEOUT = 5
+# DOWNLOAD_TIMEOUT = 5
 RETRY_ENABLED = True
 RETRY_TIMES = 10
 

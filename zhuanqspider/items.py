@@ -61,7 +61,8 @@ class KugouItem(scrapy.Item):
     song_collect = scrapy.Field()
     song_like = scrapy.Field()
     song_url = scrapy.Field()
-    file_url = scrapy.Field()
+    file_urls = scrapy.Field()
+    files = scrapy.Field()
 
 class BilibiliItem(scrapy.Item):
     # b站昵称、头像、签名、粉丝数、播放数、空间地址、mid、生日、公告

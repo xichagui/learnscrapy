@@ -6,5 +6,7 @@ custom_settings = {
     # 'ROBOTSTXT_OBEY' : True,
     'ITEM_PIPELINES': {
         # 'zhuanqspider.pipelines.Kugou5singPl': 300,
+        'scrapy.pipelines.files.FilesPipeline': 1
     },
 }
+
