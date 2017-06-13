@@ -7,6 +7,7 @@
 import logging
 
 import pymongo
+import scrapy
 
 
 class ZhuanqPipeline(object):
@@ -39,6 +40,8 @@ class Kugou5singPl(object):
 
     def process_item(self, item, spider):
         try:
+            item['file_path'] = item['files'][0]['path']
+            del item['files']
             self.db[self.mongo_collection].insert(dict(item))
         except:
             logging.info('insert error')

@@ -90,7 +90,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 }
 
-FILES_STORE = '/Users/Cha/Music'
+FILES_STORE = '/Users/Cha/Developer/python/mp3downloader/'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
