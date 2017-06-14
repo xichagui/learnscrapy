@@ -98,7 +98,25 @@ class BilibiliItem(scrapy.Item):
     #多p视频列表
     video_list = scrapy.Field()
 
+class BaiduItem(scrapy.Item):
+    baidu_name = scrapy.Field()
+    baidu_url = scrapy.Field()
+    baidu_img = scrapy.Field()
+    baidu_fans = scrapy.Field()
+    baidu_songs = scrapy.Field()
+    baidu_listen = scrapy.Field()
+    baidu_notice = scrapy.Field()
+    baidu_style = scrapy.Field()
+    baidu_type = scrapy.Field()
 
+    album_name = scrapy.Field()
+    album_play = scrapy.Field()
+    album_singer = scrapy.Field()
+    album_created = scrapy.Field()
 
-
-
+    song_title = scrapy.Field()
+    song_singer = scrapy.Field()
+    song_created = scrapy.Field()
+    song_play = scrapy.Field()
+    song_inspiration = scrapy.Field()
+    song_lrc = scrapy.Field()

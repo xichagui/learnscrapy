@@ -225,6 +225,6 @@ class JavaScriptDM(object):
             driver.get(request.url)
             time.sleep(3)
             body = driver.page_source.encode('utf-8')
-            # print(body)
-            # driver.quit()
-            return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
+            url = driver.current_url
+            driver.close()
+            return HtmlResponse(url, body=body, encoding='utf-8', request=request)
