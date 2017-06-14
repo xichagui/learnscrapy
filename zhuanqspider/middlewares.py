@@ -9,7 +9,10 @@ import random
 import logging
 
 import pymongo
+import time
 from scrapy import signals
+from scrapy.http import HtmlResponse
+from selenium import webdriver
 
 
 class ZhuanqSpiderMiddleware(object):
@@ -212,3 +215,16 @@ class HttpProxyDM(object):
         #     del request.meta["proxy"]
         # request.meta["proxy_index"] = self.proxy_index
         # proxy["count"] += 1
+
+class JavaScriptDM(object):
+
+    @classmethod
+    def process_request(cls, request, spider):
+        if 'PhantomJS' in request.meta:
+            driver = webdriver.PhantomJS()
+            driver.get(request.url)
+            time.sleep(3)
+            body = driver.page_source.encode('utf-8')
+            # print(body)
+            # driver.quit()
+            return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)

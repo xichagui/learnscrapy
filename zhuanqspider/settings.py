@@ -39,7 +39,7 @@ USER_AGENTS = [
 
 # Obey robots.txt rules
 # robots.txt 爬虫协议是否生效
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # LOG_LEVEL  = 'INFO'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
