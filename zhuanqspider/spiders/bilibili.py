@@ -28,7 +28,7 @@ class BilibiliSpider(scrapy.Spider):
     #     },
     # }
 
-    #自定义设置 覆盖settings文件 作用范围为spider
+    # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = bilibili_settings.custom_settings
 
     mapping_Bilibili = {
@@ -230,6 +230,3 @@ class BilibiliSpider(scrapy.Spider):
             item['video_list'] = video_list
 
         yield item
-
-
-

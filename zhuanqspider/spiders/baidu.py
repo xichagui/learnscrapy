@@ -10,10 +10,12 @@ from zhuanqspider.spiders.spiders_settings import baidu_settings
 class BaiduSpider(scrapy.Spider):
     name = "baidu"
     allowed_domains = ["baidu.com"]
-    start_urls = ['http://y.baidu.com/zhengbanhetu',
-                  'http://y.baidu.com/artist/145259']
+    start_urls = [
+        'http://y.baidu.com/zhengbanhetu',
+        'http://y.baidu.com/artist/145259',
+    ]
 
-    #自定义设置 覆盖settings文件 作用范围为spider
+    # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = baidu_settings.custom_settings
 
     def start_requests(self):
@@ -29,7 +31,8 @@ class BaiduSpider(scrapy.Spider):
         item['baidu_name'] = response.css('.artist-name a::text').extract()[0]
         item['baidu_url'] = response.url
         try:
-            item['baidu_notice'] = response.css('.content::attr(data-content)').extract()[0]
+            item['baidu_notice'] = response.css(
+                '.content::attr(data-content)').extract()[0]
         except IndexError:
             pass
         artist_data = response.css('.artist-data strong::text').extract()
@@ -44,6 +47,3 @@ class BaiduSpider(scrapy.Spider):
         item['baidu_type'] = baidu_type
 
         yield item
-
-
-

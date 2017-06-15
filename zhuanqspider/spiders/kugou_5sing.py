@@ -17,16 +17,17 @@ class Kugou5singSpider(scrapy.Spider):
     name = "kugou_5sing"
     allowed_domains = ["kugou.com"]
     start_urls = [
-                    # 'http://5sing.kugou.com/muhan/default.html',
-                    # 'http://5sing.kugou.com/crazyman/default.html',
-                    # 'http://5sing.kugou.com/inory/default.html',
-                    # 'http://5sing.kugou.com/jarellee/default.html',
-                    # 'http://5sing.kugou.com/462455/default.html'
-                    # 'http://5sing.kugou.com/27500705/default.html'
-                    'http://5sing.kugou.com/28378554/default.html' # 下载测试
-                  ]
+        # 'http://5sing.kugou.com/muhan/default.html',
+        # 'http://5sing.kugou.com/crazyman/default.html',
+        # 'http://5sing.kugou.com/inory/default.html',
+        # 'http://5sing.kugou.com/jarellee/default.html',
+        # 'http://5sing.kugou.com/462455/default.html'
+        # 'http://5sing.kugou.com/27500705/default.html'
+        'http://5sing.kugou.com/28378554/default.html'  # 下载测试
+    ]
 
-    #自定义设置 覆盖settings文件 作用范围为spider
+
+    # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = kugou_5sing_settings.custom_settings
 
     song_mapping = {
