@@ -6,7 +6,7 @@ custom_settings = {
         # 提供给request代理支持
         'zhuanqspider.middlewares.RandomUserAgent': 100,
         # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware':None,#禁止内置的中间件
-        'zhuanqspider.middlewares.JavaScriptDM': 543,
+        'zhuanqspider.middlewares.seleniumDM': 543,
     },
     'ITEM_PIPELINES': {
 

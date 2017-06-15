@@ -139,7 +139,7 @@ class HttpProxyDM(object):
             ip_pool = crawler.settings.getlist('IP_POOL'),
             mongo_uri = crawler.settings.get('MONGODB_URI'),
             mongo_db = crawler.settings.get('MONGODB_DB'),
-            #2号数据库
+            # 2号数据库
             mongo_collection = crawler.settings.get('MONGODB_COLLECTION_PROXY2')
         )
 
@@ -216,15 +216,16 @@ class HttpProxyDM(object):
         # request.meta["proxy_index"] = self.proxy_index
         # proxy["count"] += 1
 
-class JavaScriptDM(object):
+class seleniumDM(object):
 
     @classmethod
     def process_request(cls, request, spider):
         if 'PhantomJS' in request.meta:
             driver = webdriver.PhantomJS()
+            driver.implicitly_wait(3)
             driver.get(request.url)
-            time.sleep(3)
             body = driver.page_source.encode('utf-8')
             url = driver.current_url
-            driver.close()
-            return HtmlResponse(url, body=body, encoding='utf-8', request=request)
+            response = HtmlResponse(url, body=body, encoding='utf-8', request=request)
+            driver.quit()
+            return response

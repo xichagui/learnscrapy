@@ -29,7 +29,7 @@ class Kugou5singSpider(scrapy.Spider):
     # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = kugou_5sing_settings.custom_settings
 
-    song_mapping = {
+    SONG_MAPPING = {
         '演唱：': 'singer',
         '作词：': 'lyricist',
         '作曲：': 'composer',
@@ -117,7 +117,7 @@ class Kugou5singSpider(scrapy.Spider):
 
             try:
                 # 非采集项或采集资料为空
-                key = self.song_mapping[li_selector[0]]
+                key = self.SONG_MAPPING[li_selector[0]]
                 data = li_selector[1]
             except (KeyError, IndexError):
                 continue
