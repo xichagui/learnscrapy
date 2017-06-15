@@ -26,7 +26,6 @@ class Kugou5singSpider(scrapy.Spider):
         'http://5sing.kugou.com/28378554/default.html'  # 下载测试
     ]
 
-
     # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = kugou_5sing_settings.custom_settings
 
