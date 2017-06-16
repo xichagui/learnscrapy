@@ -15,14 +15,33 @@ class BaiduSpider(scrapy.Spider):
         # 'http://y.baidu.com/xiaoyiqing',
     ]
 
+    SONG_MAPPING = {
+        '演唱': 'singer',
+        '作词': 'lyricist',
+        '作曲': 'composer',
+        '编曲': 'arrange',
+        '混编': 'mixer',
+        '发行': 'upload_time',
+    }
+
     # 自定义设置 覆盖settings文件 作用范围为spider
     custom_settings = baidu_settings.custom_settings
 
     def start_requests(self):
-        for url in self.start_urls:
-            request = Request(url=url, callback=self.parse, dont_filter=True)
-            request.meta['PhantomJS'] = True
-            yield request
+        # for url in self.start_urls:
+        #     request = Request(url=url, callback=self.parse, dont_filter=True)
+        #     request.meta['PhantomJS'] = True
+        #     yield request
+        request = Request(
+            url='http://y.baidu.com/song/212835',
+            callback=self.parse_song,
+            dont_filter=True,
+            meta={
+                'item': BaiduItem(),
+                'PhantomJS': True,
+            }
+        )
+        yield request
 
     def parse(self, response):
         # html = (response.body).decode('utf-8')
@@ -61,7 +80,7 @@ class BaiduSpider(scrapy.Spider):
         for url in song_urls:
             yield Request(
                 response.urljoin(url),
-                callback=self.song_parse,
+                callback=self.parse_song,
                 meta={'PhantomJS': True, 'item': item}
             )
 
@@ -76,6 +95,13 @@ class BaiduSpider(scrapy.Spider):
         except IndexError:
             pass
 
-    def song_parse(self, response):
-        print(response.url)
-        # pass
+    def parse_song(self, response):
+        item = response.meta['item']
+
+        item['title'] = response.css('#song_title::text').extract()[0]
+        base_info_list = response.css('.base-info .bd li::text').extract()
+        for info in base_info_list:
+            _info = info.split('：')
+            item[self.SONG_MAPPING[_info[0]]] = _info[1]
+
+        yield  item
