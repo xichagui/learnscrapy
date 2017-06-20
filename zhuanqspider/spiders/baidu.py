@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import re
 import scrapy
-import time
-from scrapy import Request, FormRequest
+from scrapy import Request
 
 from zhuanqspider.items import BaiduItem
 from zhuanqspider.spiders.spiders_settings import baidu_settings
@@ -13,6 +13,7 @@ class BaiduSpider(scrapy.Spider):
     start_urls = [
         'http://y.baidu.com/zhengbanhetu',
         # 'http://y.baidu.com/xiaoyiqing',
+        'http://y.baidu.com/song/327326',
     ]
 
     SONG_MAPPING = {
@@ -33,7 +34,7 @@ class BaiduSpider(scrapy.Spider):
         #     request.meta['PhantomJS'] = True
         #     yield request
         request = Request(
-            url='http://y.baidu.com/song/212835',
+            url='http://y.baidu.com/song/327326',
             callback=self.parse_song,
             dont_filter=True,
             meta={
@@ -104,4 +105,17 @@ class BaiduSpider(scrapy.Spider):
             _info = info.split('：')
             item[self.SONG_MAPPING[_info[0]]] = _info[1]
 
-        yield  item
+        inspiration_div = response.css('.song-story .bd').extract()[0]
+        inspiration_m = re.search('<div class="bd">([\s\S]*)</div>', inspiration_div)
+        item['inspiration'] = inspiration_m.group(1)
+        lrc_div = response.css('.song-lrc #lyric-content').extract()[0]
+        item['lrc'] = re.search('<div id="lyric-content" class="lyric-hidden">([\s\S]*)</div>', lrc_div).group(1)
+
+        play_str = response.css('.listen-times span::text').extract()[0]
+
+        if '万' in play_str:
+            item['play'] = str(int(float(play_str[:-1]) * 10000))
+        else:
+            item['play'] = play_str
+
+        yield item

@@ -54,10 +54,10 @@ class Kugou5singSpider(scrapy.Spider):
         '''
         item['kugou_name'] = re.search('var OwnerNickName = \'(.*)\'', response.body_as_unicode()).group(1)
         item['kugou_url'] = response.url
-        item['kugou_popular'] = \
-            re.search('\d+', response.selector.xpath('//*[@id="totalrq"]/a/text()').extract()[0]).group(0)
-        item['kugou_fans'] =  \
-            re.search('\d+', response.selector.xpath('//*[@id="totalfans"]/a/text()').extract()[0]).group(0)
+        item['kugou_popular'] = re.search('\d+',
+                                          response.selector.xpath('//*[@id="totalrq"]/a/text()').extract()[0]).group(0)
+        item['kugou_fans'] = re.search('\d+',
+                                       response.selector.xpath('//*[@id="totalfans"]/a/text()').extract()[0]).group(0)
 
         # 针对目前发现的5种 5sing主页
         img, version = self.get_img_a_version(response)
