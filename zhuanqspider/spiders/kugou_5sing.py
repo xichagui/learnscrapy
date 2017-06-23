@@ -23,11 +23,24 @@ class Kugou5singSpider(scrapy.Spider):
         # 'http://5sing.kugou.com/jarellee/default.html',
         # 'http://5sing.kugou.com/462455/default.html'
         # 'http://5sing.kugou.com/27500705/default.html'
-        'http://5sing.kugou.com/28378554/default.html'  # 下载测试
+        # 'http://5sing.kugou.com/28378554/default.html'  # 下载测试
+        'http://5sing.kugou.com/ariel/default.html',  # 司夏
+        'http://5sing.kugou.com/462455/default.html',  # 河图
+        'http://5sing.kugou.com/muhan/default.html',  # 慕寒
+        # 'http://5sing.kugou.com/midaho/default.html',  # Midaho
+        # 'http://5sing.kugou.com/amuro/default.html',  # Amuro
+        # 'http://5sing.kugou.com/XGJUN/default.html',  # 西瓜jun
+        # 'http://5sing.kugou.com/XGJUN/default.html',  # 西瓜Kune
+        # 'http://5sing.kugou.com/yousa/default.html',  # 泠鸢
+        # 'http://5sing.kugou.com/inory/default.html',  # 祈Inory
+        # 'http://5sing.kugou.com/tanshao/default.html',  # 檀烧
+        # 'http://5sing.kugou.com/weepclouds/default.html',  # 云呆
+        # 'http://5sing.kugou.com/Tacke/default.html',  # 竹桑
+        # 'http://5sing.kugou.com/35341590/default.html',  # 双笙
     ]
 
     # 自定义设置 覆盖settings文件 作用范围为spider
-    custom_settings = kugou_5sing_settings.custom_settings
+    # custom_settings = kugou_5sing_settings.custom_settings
 
     SONG_MAPPING = {
         '演唱：': 'singer',

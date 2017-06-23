@@ -124,3 +124,14 @@ class BaiduItem(scrapy.Item):
     inspiration = scrapy.Field()
     lrc = scrapy.Field()
     play = scrapy.Field()
+
+class music163Item(scrapy.Item):
+    music163_name = scrapy.Field()
+    music163_artist_url = scrapy.Field()
+    music163_artist_img = scrapy.Field()
+    music163_fans = scrapy.Field()
+    music163_info = scrapy.Field()
+
+    title = scrapy.Field()
+    singer = scrapy.Field()
+    upload_time = scrapy.Field()
