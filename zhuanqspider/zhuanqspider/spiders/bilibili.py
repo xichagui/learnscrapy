@@ -8,7 +8,7 @@ import scrapy
 import time
 from scrapy import FormRequest
 
-from zhuanqspider.items import BilibiliItem
+from zhuanqspider.spider import BilibiliItem
 from zhuanqspider.spiders.spiders_settings import bilibili_settings
 from zhuanqspider.util.spider_util import SpiderUtil
 
