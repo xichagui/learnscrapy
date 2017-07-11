@@ -8,6 +8,6 @@ custom_settings = {
     },
     # 'ROBOTSTXT_OBEY' : True,
     'ITEM_PIPELINES': {
-        'zhuanqspider.pipelines.BilibiliPl': 300,
+        # 'zhuanqspider.pipelines.BilibiliPl': 300,
     },
 }

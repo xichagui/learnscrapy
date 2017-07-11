@@ -8,7 +8,7 @@ import random
 
 import logging
 
-import pymongo
+# import pymongo
 import time
 from scrapy import signals
 from scrapy.http import HtmlResponse
