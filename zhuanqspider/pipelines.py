@@ -21,6 +21,7 @@ class Kugou5singPl(object):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
         self.mongo_collection = mongo_collection
+        print("Kugou5singPl __init__")
 
     @classmethod
     def from_crawler(cls, crawler):

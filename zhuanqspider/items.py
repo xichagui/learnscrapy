@@ -6,7 +6,17 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from scrapy_djangoitem import DjangoItem
 
+
+'''
+继承DjangoItem 
+统一所有爬虫对象
+通过django orm 来管理
+'''
+class Work(DjangoItem):
+    # django_model = Work
+    pass
 
 class KugouItem(scrapy.Item):
     # define the fields for your item here like:
