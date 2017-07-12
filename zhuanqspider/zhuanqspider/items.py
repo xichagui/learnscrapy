@@ -6,17 +6,20 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-from scrapy_djangoitem import DjangoItem
-
+# from scrapy_djangoitem import DjangoItem
+from spiders.models import Work, Author
 
 '''
 继承DjangoItem 
 统一所有爬虫对象
 通过django orm 来管理
 '''
-class Work(DjangoItem):
-    # django_model = Work
-    pass
+# class WorkItem(DjangoItem):
+#     django_model = Work
+#
+# class AuthorItem(DjangoItem):
+#     django_model = Author
+
 
 class KugouItem(scrapy.Item):
     # define the fields for your item here like:

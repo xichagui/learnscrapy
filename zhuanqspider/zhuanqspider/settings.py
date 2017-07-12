@@ -10,6 +10,15 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 from zhuanqspider.personal_settings import *
+import sys
+import os
+import django
+
+'''引入django路径'''
+sys.path.append('/Users/Cha/Developer/zhuanq/zhuanqspidersys/zhuanqspidersys')
+# sys.path.append('../zhuanqspidersys/zhuanqspidersys/spiders')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'zhuanqspidersys.settings'
+django.setup()
 
 BOT_NAME = 'zhuanqspider'
 
