@@ -3,8 +3,8 @@ import re
 import scrapy
 from scrapy import Request, FormRequest
 
-from zhuanqspider.items import BaiduItem
-from zhuanqspider.spiders.spiders_settings import baidu_settings
+# from zhuanqspider.items import BaiduItem
+# from zhuanqspider.spiders.spiders_settings import baidu_settings
 
 
 class Music163Spider(scrapy.Spider):

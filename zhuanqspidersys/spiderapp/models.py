@@ -4,11 +4,12 @@ from django.db import models
 # Create your models here.
 class Author(models.Model):
     name = models.CharField(max_length=200)
-    head_url = models.CharField(max_length=200)
-    fans_num = models.BigIntegerField()
-    popular = models.BigIntegerField()
+    head_url = models.CharField(max_length=200, null=True)
+    fans = models.BigIntegerField(null=True)
+    popular = models.BigIntegerField(null=True)
+    sign = models.CharField(max_length=100, null=True)
 
-    kugou_url = models.URLField(blank=True)
+    kugou_url = models.URLField(blank=True, null=True)
 
     kugou_is_vip = models.BooleanField(default=False)
     kugou_is_realname = models.BooleanField(default=False)
@@ -20,9 +21,16 @@ class Author(models.Model):
     kugou_is_mobile = models.BooleanField(default=False)
     kugou_is_xinlang = models.BooleanField(default=False)
     kugou_is_renren = models.BooleanField(default=False)
+    kugou_is_tengxun = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 class Style(models.Model):
     name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
 
 class Work(models.Model):
     title = models.CharField('标题', max_length=200)
@@ -34,16 +42,21 @@ class Work(models.Model):
     type = models.CharField(max_length=20)
     language = models.CharField(max_length=20)
     style = models.ManyToManyField(Style)
-    upload_time = models.DateTimeField()
+    upload_time = models.DateTimeField(null=True)
     original_singer = models.ManyToManyField(Author, blank=True, related_name='original_singer')
-    lrc = models.TextField(max_length=500)
-    inspiration = models.TextField(max_length=1000)
-    song_popular = models.BigIntegerField()
-    song_click = models.BigIntegerField()
-    song_download_count = models.BigIntegerField()
-    song_collect = models.BigIntegerField()
-    song_like = models.BigIntegerField()
-    song_url = models.URLField()
+    lrc = models.TextField(max_length=500, blank=True, null=True)
+    inspiration = models.TextField(max_length=1000, blank=True, null=True)
+
+    popular = models.BigIntegerField(blank=True, null=True)
+    click = models.BigIntegerField(blank=True, null=True)
+    download_count = models.BigIntegerField(blank=True, null=True)
+    collect = models.BigIntegerField(blank=True, null=True)
+    like = models.BigIntegerField(blank=True, null=True)
+    kugou_url = models.URLField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.title
 
     # title = models.CharField(max_length=100)  # 博客标题
     # category = models.ForeignKey(Category)  # 分类,外键

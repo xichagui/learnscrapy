@@ -7,7 +7,6 @@
 
 import scrapy
 # from scrapy_djangoitem import DjangoItem
-from spiders.models import Work, Author
 
 '''
 继承DjangoItem 
@@ -20,6 +19,34 @@ from spiders.models import Work, Author
 # class AuthorItem(DjangoItem):
 #     django_model = Author
 
+class KugouUserItem(scrapy.Item):
+    # 昵称
+    name = scrapy.Field()
+    # 粉丝数
+    fans = scrapy.Field()
+    # 人气
+    popular = scrapy.Field()
+    # 头像链接
+    img = scrapy.Field()
+    # 签名
+    sign = scrapy.Field()
+    # 5sing首页url
+    kugou_url = scrapy.Field()
+    '''
+        5sing图标
+        会员、实名、淘歌达人、音乐人、live资格、推荐歌手、明星会员、手机客户端、微博、人人网
+    '''
+    is_vip = scrapy.Field()
+    is_realname = scrapy.Field()
+    is_tao = scrapy.Field()
+    is_musician = scrapy.Field()
+    is_liver = scrapy.Field()
+    is_recommend = scrapy.Field()
+    is_star = scrapy.Field()
+    is_mobile = scrapy.Field()
+    is_xinlang = scrapy.Field()
+    is_renren = scrapy.Field()
+    is_tengxun = scrapy.Field()
 
 class KugouItem(scrapy.Item):
     # define the fields for your item here like:
@@ -52,6 +79,7 @@ class KugouItem(scrapy.Item):
     is_mobile = scrapy.Field()
     is_xinlang = scrapy.Field()
     is_renren = scrapy.Field()
+    is_tengxun = scrapy.Field()
 
     # 歌曲信息
     song_name = scrapy.Field()

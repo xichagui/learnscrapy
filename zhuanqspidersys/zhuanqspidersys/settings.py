@@ -25,7 +25,7 @@ SECRET_KEY = '1h8k-&knr-6bzb(&t%h&*hpq7_ifkns4sq(w8gc0_krkoe%(@='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,8 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'spiders',
-    'spiders.apps.SpidersConfig'
+    'spiderapp',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +120,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
